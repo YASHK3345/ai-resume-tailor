@@ -1,6 +1,11 @@
 import streamlit as st
-from backend.parser import parse_pdf, parse_docx
-from backend.ai_helper import tailor_resume
+import sys, os
+
+# ✅ Force Streamlit to recognize backend folder
+sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
+
+from parser import parse_pdf, parse_docx
+from ai_helper import tailor_resume
 from fpdf import FPDF
 
 st.set_page_config(page_title="AI Resume Tailor", page_icon="📄")
@@ -55,3 +60,4 @@ if st.button("🚀 Tailor Resume with AI"):
             )
     else:
         st.warning("⚠️ Please upload a resume and paste a job description.")
+
