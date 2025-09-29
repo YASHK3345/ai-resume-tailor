@@ -1,12 +1,12 @@
 import streamlit as st
 import sys, os
 
-# ✅ Force Streamlit to recognize backend folder
+# ✅ Ensure backend folder is always in path
 sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
 
 from parser import parse_pdf, parse_docx
 from ai_helper import tailor_resume
-from fpdf import FPDF
+from fpdf import FPDF   # using fpdf2 (supports Unicode)
 
 st.set_page_config(page_title="AI Resume Tailor", page_icon="📄")
 
@@ -36,16 +36,17 @@ if st.button("🚀 Tailor Resume with AI"):
         with st.spinner("⏳ AI is tailoring your resume..."):
             result = tailor_resume(resume_text, job_desc)
 
+        # Show result in the app
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export
+        # 📥 PDF Export (fpdf2 handles Unicode safely)
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_font("Arial", size=12)
+        pdf.set_font("Helvetica", size=12)
 
         for line in result.split("\n"):
-            if line.strip() != "":
+            if line.strip():
                 pdf.multi_cell(0, 10, line)
 
         pdf_file = "tailored_resume.pdf"
@@ -60,4 +61,3 @@ if st.button("🚀 Tailor Resume with AI"):
             )
     else:
         st.warning("⚠️ Please upload a resume and paste a job description.")
-
