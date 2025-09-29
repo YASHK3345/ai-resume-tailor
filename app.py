@@ -8,8 +8,20 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
 from parser import parse_pdf, parse_docx
 from ai_helper import tailor_resume
 
+# Page config
 st.set_page_config(page_title="AI Resume Tailor", page_icon="📄")
 
+# Sidebar info
+st.sidebar.title("ℹ️ About AI Resume Tailor")
+st.sidebar.write(
+    "This app helps you tailor your resume and cover letter to a job description using AI. "
+    "Upload your resume, paste a job description, and get a customized PDF instantly."
+)
+
+st.sidebar.markdown("---")
+st.sidebar.write("👨‍💻 Built by [YASHK3345](https://github.com/YASHK3345)")
+
+# Main Title
 st.title("📄 AI Resume Tailor")
 st.write("Upload your resume and paste a job description to get a tailored version with AI.")
 
@@ -53,14 +65,26 @@ if st.button("🚀 Tailor Resume with AI"):
         else:
             pdf.set_font("Helvetica", size=12)  # fallback if font missing
 
-        for line in result.split("\n"):
-            if line.strip():
-                try:
-                    pdf.multi_cell(0, 10, line)
-                except Exception:
-                    # fallback if still fails
-                    safe_line = line.encode("latin-1", "replace").decode("latin-1")
-                    pdf.write(10, safe_line + "\n")
+        # Split AI result into sections
+        sections = result.split("###")
+        for section in sections:
+            if not section.strip():
+                continue
+
+            if "Tailored Resume" in section:
+                pdf.set_font("DejaVu", "B", 14)
+                pdf.cell(0, 12, "Tailored Resume", ln=True)
+                pdf.ln(4)
+                pdf.set_font("DejaVu", "", 12)
+                pdf.multi_cell(0, 10, section.replace("Tailored Resume", "").strip())
+
+            elif "Tailored Cover Letter" in section:
+                pdf.add_page()
+                pdf.set_font("DejaVu", "B", 14)
+                pdf.cell(0, 12, "Tailored Cover Letter", ln=True)
+                pdf.ln(4)
+                pdf.set_font("DejaVu", "", 12)
+                pdf.multi_cell(0, 10, section.replace("Tailored Cover Letter", "").strip())
 
         pdf_file = "tailored_resume.pdf"
         pdf.output(pdf_file)
