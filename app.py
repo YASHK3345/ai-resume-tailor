@@ -76,6 +76,10 @@ if uploaded_file:
 
     st.success("✅ Resume uploaded successfully!")
 
+# 🔹 Helper function to clean Unicode text for PDF
+def clean_text(text: str) -> str:
+    return text.encode("latin-1", "ignore").decode("latin-1")
+
 # 🚀 Tailor with AI
 if st.button("🚀 Tailor Resume Now"):
     if resume_text and job_desc:
@@ -85,7 +89,7 @@ if st.button("🚀 Tailor Resume Now"):
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export (Helvetica only)
+        # 📥 PDF Export (Safe Unicode cleaning)
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Helvetica", size=12)
@@ -101,7 +105,7 @@ if st.button("🚀 Tailor Resume Now"):
                 pdf.cell(0, 12, "Tailored Resume", ln=True)
                 pdf.ln(4)
                 pdf.set_font("Helvetica", size=12)
-                pdf.multi_cell(0, 10, section.replace("Tailored Resume", "").strip())
+                pdf.multi_cell(0, 10, clean_text(section.replace("Tailored Resume", "").strip()))
 
             elif "Tailored Cover Letter" in section:
                 pdf.add_page()
@@ -109,7 +113,7 @@ if st.button("🚀 Tailor Resume Now"):
                 pdf.cell(0, 12, "Tailored Cover Letter", ln=True)
                 pdf.ln(4)
                 pdf.set_font("Helvetica", size=12)
-                pdf.multi_cell(0, 10, section.replace("Tailored Cover Letter", "").strip())
+                pdf.multi_cell(0, 10, clean_text(section.replace("Tailored Cover Letter", "").strip()))
 
         pdf_file = "tailored_resume.pdf"
         pdf.output(pdf_file)
