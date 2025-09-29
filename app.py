@@ -1,12 +1,12 @@
 import streamlit as st
 import sys, os
+from fpdf import FPDF   # using fpdf2 (Unicode-ready)
 
 # ✅ Ensure backend folder is always in path
 sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
 
 from parser import parse_pdf, parse_docx
 from ai_helper import tailor_resume
-from fpdf import FPDF   # using fpdf2 (supports Unicode)
 
 st.set_page_config(page_title="AI Resume Tailor", page_icon="📄")
 
@@ -40,17 +40,23 @@ if st.button("🚀 Tailor Resume with AI"):
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export (safe handling for long lines)
+        # 📥 PDF Export with Unicode font
         pdf = FPDF()
         pdf.add_page()
-        pdf.set_font("Helvetica", size=12)
+
+        # ✅ Add Unicode font (make sure fonts/DejaVuSans.ttf exists)
+        font_path = os.path.join("fonts", "DejaVuSans.ttf")
+        pdf.add_font("DejaVu", "", font_path, uni=True)
+        pdf.set_font("DejaVu", size=12)
 
         for line in result.split("\n"):
             if line.strip():
                 try:
                     pdf.multi_cell(0, 10, line)
-                except:
-                    pdf.write(10, line + "\n")
+                except Exception:
+                    # fallback: replace unsupported chars
+                    safe_line = line.encode("latin-1", "replace").decode("latin-1")
+                    pdf.write(10, safe_line + "\n")
 
         pdf_file = "tailored_resume.pdf"
         pdf.output(pdf_file)
