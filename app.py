@@ -1,6 +1,6 @@
 import streamlit as st
 import sys, os
-from fpdf import FPDF   # using fpdf2 (Unicode-ready)
+from fpdf import FPDF   # using fpdf2
 
 # ✅ Ensure backend folder is always in path
 sys.path.append(os.path.join(os.path.dirname(__file__), "backend"))
@@ -85,16 +85,10 @@ if st.button("🚀 Tailor Resume Now"):
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export with Unicode (regular font only)
+        # 📥 PDF Export (Helvetica only)
         pdf = FPDF()
         pdf.add_page()
-
-        font_path = os.path.join(os.path.dirname(__file__), "fonts")
-        try:
-            pdf.add_font("DejaVu", "", os.path.join(font_path, "DejaVuSans.ttf"), uni=True)
-            pdf.set_font("DejaVu", size=12)
-        except FileNotFoundError:
-            pdf.set_font("Helvetica", size=12)
+        pdf.set_font("Helvetica", size=12)
 
         # Split AI result into sections
         sections = result.split("###")
@@ -103,18 +97,18 @@ if st.button("🚀 Tailor Resume Now"):
                 continue
 
             if "Tailored Resume" in section:
-                pdf.set_font("DejaVu", "", 14)
+                pdf.set_font("Helvetica", size=14)
                 pdf.cell(0, 12, "Tailored Resume", ln=True)
                 pdf.ln(4)
-                pdf.set_font("DejaVu", "", 12)
+                pdf.set_font("Helvetica", size=12)
                 pdf.multi_cell(0, 10, section.replace("Tailored Resume", "").strip())
 
             elif "Tailored Cover Letter" in section:
                 pdf.add_page()
-                pdf.set_font("DejaVu", "", 14)
+                pdf.set_font("Helvetica", size=14)
                 pdf.cell(0, 12, "Tailored Cover Letter", ln=True)
                 pdf.ln(4)
-                pdf.set_font("DejaVu", "", 12)
+                pdf.set_font("Helvetica", size=12)
                 pdf.multi_cell(0, 10, section.replace("Tailored Cover Letter", "").strip())
 
         pdf_file = "tailored_resume.pdf"
