@@ -17,7 +17,6 @@ st.sidebar.write(
     "This app helps you tailor your resume and cover letter to a job description using AI. "
     "Upload your resume, paste a job description, and get a customized PDF instantly."
 )
-
 st.sidebar.markdown("---")
 st.sidebar.write("👨‍💻 Built by [YASHK3345](https://github.com/YASHK3345)")
 
@@ -52,18 +51,19 @@ if st.button("🚀 Tailor Resume with AI"):
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export with Unicode font
+        # 📥 PDF Export with Unicode + Bold headers
         pdf = FPDF()
         pdf.add_page()
 
-        # ✅ Load font safely (works on local + Streamlit Cloud)
-        font_path = os.path.join(os.path.dirname(__file__), "fonts", "DejaVuSans.ttf")
-
-        if os.path.exists(font_path):
-            pdf.add_font("DejaVu", "", font_path, uni=True)
+        # ✅ Load font safely (regular, bold, italic)
+        font_path = os.path.join(os.path.dirname(__file__), "fonts")
+        try:
+            pdf.add_font("DejaVu", "", os.path.join(font_path, "DejaVuSans.ttf"), uni=True)
+            pdf.add_font("DejaVu", "B", os.path.join(font_path, "DejaVuSans-Bold.ttf"), uni=True)
+            pdf.add_font("DejaVu", "I", os.path.join(font_path, "DejaVuSans-Oblique.ttf"), uni=True)
             pdf.set_font("DejaVu", size=12)
-        else:
-            pdf.set_font("Helvetica", size=12)  # fallback if font missing
+        except FileNotFoundError:
+            pdf.set_font("Helvetica", size=12)  # fallback if fonts missing
 
         # Split AI result into sections
         sections = result.split("###")
