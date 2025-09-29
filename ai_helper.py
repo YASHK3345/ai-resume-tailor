@@ -1,39 +1,32 @@
 import os
 from openai import OpenAI
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "..", ".env"))
+api_key = os.getenv("OPENAI_API_KEY")
+
+if not api_key:
+    raise ValueError("❌ OPENAI_API_KEY not found. Please set it in your environment or .env file.")
+
+# ✅ Initialize OpenAI client
+client = OpenAI(api_key=api_key)
 
 def tailor_resume(resume_text, job_desc):
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        raise ValueError("❌ OPENAI_API_KEY not found. Please set it in your .env file.")
-
-    client = OpenAI(api_key=api_key)
-
-    # Structured prompt
     prompt = f"""
-    You are an AI career coach.
-    Rewrite the resume to fit this job description.
+    You are an AI resume assistant.
+    Tailor the following resume to the job description.
 
-    JOB DESCRIPTION:
-    {job_desc}
-
-    RESUME:
+    Resume:
     {resume_text}
 
-    Output strictly in this format:
+    Job Description:
+    {job_desc}
 
-    ### Tailored Resume
-    (Write improved bullet points here)
-
-    ### Tailored Cover Letter
-    (Write a professional cover letter here)
+    Provide two sections:
+    1. Tailored Resume
+    2. Tailored Cover Letter
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-3.5-turbo",  # or gpt-4o if available
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7
     )
