@@ -40,14 +40,17 @@ if st.button("🚀 Tailor Resume with AI"):
         st.subheader("✨ Tailored Resume + Cover Letter")
         st.markdown(result)
 
-        # 📥 PDF Export (fpdf2 handles Unicode safely)
+        # 📥 PDF Export (safe handling for long lines)
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("Helvetica", size=12)
 
         for line in result.split("\n"):
             if line.strip():
-                pdf.multi_cell(0, 10, line)
+                try:
+                    pdf.multi_cell(0, 10, line)
+                except:
+                    pdf.write(10, line + "\n")
 
         pdf_file = "tailored_resume.pdf"
         pdf.output(pdf_file)
