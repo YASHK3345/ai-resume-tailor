@@ -3,5 +3,6 @@ PyPDF2
 python-docx
 openai
 python-dotenv
-fpdf
+fpdf2
+
 
