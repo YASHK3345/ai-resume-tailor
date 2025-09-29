@@ -4,5 +4,3 @@ python-docx
 openai
 python-dotenv
 fpdf2
-
-
