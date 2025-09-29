@@ -1,16 +1,22 @@
 import os
-import openai
+from openai import OpenAI
 
-# ✅ Load API key once
+# ✅ Load API key + Project ID
 api_key = os.getenv("OPENAI_API_KEY")
-if not api_key:
-    raise ValueError("❌ OPENAI_API_KEY not found. Please set it in your .env file.")
+project_id = os.getenv("OPENAI_PROJECT_ID")
 
-openai.api_key = api_key
+if not api_key:
+    raise ValueError("❌ OPENAI_API_KEY not found. Please set it in your .env or Streamlit secrets.")
+
+if not project_id:
+    raise ValueError("❌ OPENAI_PROJECT_ID not found. Please set it in your .env or Streamlit secrets.")
+
+# ✅ Initialize OpenAI client with project auth
+client = OpenAI(api_key=api_key, project=project_id)
 
 def tailor_resume(resume_text: str, job_desc: str) -> str:
     """
-    Uses OpenAI to tailor resume & cover letter to job description.
+    Uses OpenAI (with project-scoped keys) to tailor resume & cover letter.
     """
     prompt = f"""
     You are an AI career assistant.
@@ -26,9 +32,9 @@ def tailor_resume(resume_text: str, job_desc: str) -> str:
     Format clearly with headings.
     """
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",   # ✅ classic stable model
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # ✅ safe lightweight model
         messages=[{"role": "user", "content": prompt}],
     )
 
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].message.content
