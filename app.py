@@ -44,17 +44,21 @@ if st.button("🚀 Tailor Resume with AI"):
         pdf = FPDF()
         pdf.add_page()
 
-        # ✅ Add Unicode font (make sure fonts/DejaVuSans.ttf exists)
-        font_path = os.path.join("fonts", "DejaVuSans.ttf")
-        pdf.add_font("DejaVu", "", font_path, uni=True)
-        pdf.set_font("DejaVu", size=12)
+        # ✅ Load font safely (works on local + Streamlit Cloud)
+        font_path = os.path.join(os.path.dirname(__file__), "fonts", "DejaVuSans.ttf")
+
+        if os.path.exists(font_path):
+            pdf.add_font("DejaVu", "", font_path, uni=True)
+            pdf.set_font("DejaVu", size=12)
+        else:
+            pdf.set_font("Helvetica", size=12)  # fallback if font missing
 
         for line in result.split("\n"):
             if line.strip():
                 try:
                     pdf.multi_cell(0, 10, line)
                 except Exception:
-                    # fallback: replace unsupported chars
+                    # fallback if still fails
                     safe_line = line.encode("latin-1", "replace").decode("latin-1")
                     pdf.write(10, safe_line + "\n")
 
