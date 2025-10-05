@@ -142,7 +142,7 @@ async def export_cv_to_word(
 async def export_cv_to_json(
     cv_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Export CV to JSON format"""
     
