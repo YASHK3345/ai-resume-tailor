@@ -41,7 +41,7 @@ async def create_cv(
 @router.get("/", response_model=List[CVResponse])
 async def get_user_cvs(
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Get all CVs for the current user"""
     
@@ -52,7 +52,7 @@ async def get_user_cvs(
 async def get_cv(
     cv_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Get a specific CV"""
     
@@ -70,7 +70,7 @@ async def update_cv(
     cv_id: str,
     cv_update: CVUpdate,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Update a CV"""
     
@@ -113,7 +113,7 @@ async def update_cv(
 async def delete_cv(
     cv_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Delete a CV"""
     
@@ -131,7 +131,7 @@ async def delete_cv(
 async def duplicate_cv(
     cv_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Duplicate a CV"""
     
