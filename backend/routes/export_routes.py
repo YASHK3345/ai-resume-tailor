@@ -19,7 +19,7 @@ template_service = TemplateService()
 async def export_cv_to_pdf(
     cv_id: str,
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Export CV to PDF format"""
     
