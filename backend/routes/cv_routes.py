@@ -13,7 +13,8 @@ router = APIRouter(prefix="/cv", tags=["cv"])
 @router.post("/", response_model=CVResponse)
 async def create_cv(
     cv_data: CVCreate,
-    db: AsyncIOMotorClient = Depends(get_database)
+    db: AsyncIOMotorClient = Depends(get_database),
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Create a new CV"""
     
