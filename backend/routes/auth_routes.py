@@ -3,14 +3,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from models.user import User, UserCreate, UserLogin, UserResponse
 from auth.auth import hash_password, verify_password, create_access_token, get_current_user
 from auth.oauth import GoogleOAuth
+from database import get_database
 import os
-
-# Get database dependency
-async def get_database() -> AsyncIOMotorClient:
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    return db
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
