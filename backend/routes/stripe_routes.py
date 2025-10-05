@@ -1,17 +1,11 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.user import User
-from auth.auth import get_current_user
+from auth.auth import get_current_user_dependency
+from database import get_database
 import stripe
 import os
 from datetime import datetime, timedelta
-
-# Get database dependency
-async def get_database() -> AsyncIOMotorClient:
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    return db
 
 router = APIRouter(prefix="/subscription", tags=["subscription"])
 
