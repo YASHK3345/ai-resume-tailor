@@ -49,6 +49,39 @@ def verify_token(token: str) -> dict:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+async def get_current_user_dependency(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Dependency to get current authenticated user"""
+    if not credentials:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
+    
+    payload = verify_token(credentials.credentials)
+    user_id = payload.get("sub")
+    
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials"
+        )
+    
+    # Import here to avoid circular imports
+    from database import get_database
+    
+    # Get user from database
+    db = await get_database()
+    user_data = await db.users.find_one({"id": user_id})
+    if user_data:
+        return User(**user_data)
+    
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="User not found"
+    )
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: AsyncIOMotorClient = None) -> User:
     """Get current authenticated user"""
     if not credentials:
