@@ -15,7 +15,7 @@ ai_service = AIService()
 @router.post("/optimize-content", response_model=AIContentResponse)
 async def optimize_content(
     request: AIContentRequest,
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Optimize CV content using AI"""
     
@@ -39,7 +39,7 @@ async def optimize_content(
 @router.post("/analyze-ats", response_model=ATSAnalysisResponse)
 async def analyze_ats(
     request: ATSAnalysisRequest,
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Analyze CV for ATS compatibility"""
     
@@ -59,7 +59,7 @@ async def analyze_ats(
 async def get_ai_suggestions(
     section_type: str,
     job_title: str = None,
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Get AI suggestions for CV sections"""
     
