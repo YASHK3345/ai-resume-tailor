@@ -58,7 +58,7 @@ async def get_pricing_plans():
 @router.get("/current")
 async def get_current_subscription(
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Get current user subscription details"""
     
@@ -74,7 +74,7 @@ async def get_current_subscription(
 async def create_checkout_session(
     plan: str,  # "pro"
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Create Stripe checkout session for subscription"""
     
