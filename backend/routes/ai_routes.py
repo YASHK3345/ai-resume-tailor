@@ -2,16 +2,10 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.ai import AIContentRequest, AIContentResponse, ATSAnalysisRequest, ATSAnalysisResponse
 from models.user import User
-from auth.auth import get_current_user
+from auth.auth import get_current_user_dependency
 from services.ai_service import AIService
+from database import get_database
 import os
-
-# Get database dependency
-async def get_database() -> AsyncIOMotorClient:
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    return db
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
