@@ -3,16 +3,10 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from typing import List, Optional
 from models.cv import CVData, CVCreate, CVUpdate, CVResponse
 from models.user import User
-from auth.auth import get_current_user
+from auth.auth import get_current_user_dependency
+from database import get_database
 import os
 from datetime import datetime
-
-# Get database dependency
-async def get_database() -> AsyncIOMotorClient:
-    mongo_url = os.environ['MONGO_URL']
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[os.environ['DB_NAME']]
-    return db
 
 router = APIRouter(prefix="/cv", tags=["cv"])
 
