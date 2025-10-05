@@ -155,7 +155,7 @@ async def stripe_webhook(
 @router.post("/cancel")
 async def cancel_subscription(
     db: AsyncIOMotorClient = Depends(get_database),
-    current_user: User = Depends(lambda: get_current_user(db=get_database()))
+    current_user: User = Depends(get_current_user_dependency)
 ):
     """Cancel user subscription"""
     
